@@ -1,6 +1,6 @@
 $(function() {
 	let BaseballChart = (function($, undefined) {
-		let API_BASE = "https://baseball-charting-api.herokuapp.com/";
+		let API_BASE = "https://baseball-charting-api.herokuapp.com/api/";
 		let teams = [];
 		let setAuthHeader = function(sessionToken) {
 			window.localStorage.setItem("sessionToken", sessionToken);
