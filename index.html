@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link rel="stylesheet" href="./app.css">	
+		<link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
+		<script src="./bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		<title>Play Ball!!!</title>
+	</head>
+	<body>
+		<ul class="nav nav-tabs hidden">
+			<li class="active"><a href="#home" data-toggle="tab">Profile</a></li>
+			<li><a href="#teams" data-toggle="tab">Teams</a></li>
+			<li><a href="#players" data-toggle="tab">Players</a></li>
+			<li><a href="#Hstats" data-toggle="tab">Hitting Stats</a></li>
+			<li><a href="#Pstats" data-toggle="tab">Pitching Stats</a></li>
+			<li><a href="https://www.fangraphs.com" target="blank">Fangraphs.com</a></li>
+			<li class="pull-right"><a href="#loginPage" id="logout" data-toggle="tab">Logout</a></li>
+			<li class="pull-right" data-toggle="tab">Hello <label id="userName"></label>!</li>
+		</ul>
+
+		<div class="container">
+			<div class="tab-content">
+				<div class="tab-pane active" id="loginPage">
+					<h2>Baseball Charting and stat-tracking app!</h2>
+					<div id="forLogin">
+						<button data-toggle="modal" data-target="#login-modal" class="btn btn-primary">Login</button>
+						<button data-toggle="modal" data-target="#signup-modal" class="btn btn-primary">Sign Up</button>
+					</div>
+					<div id="forLogout" style="display:none;">
+						<button class="btn btn-primary">Logout</button>
+					</div>
+				</div>
+				<div class="tab-pane" id="home">
+					<h2>Welcome!</h2>
+<!-- 					<div>
+						<button class="btn btn-primary" id="homeToTeam">Add Team</button>
+						<button class="btn btn-primary" id="homeToPlayer">Add Player</button>
+						<button class="btn btn-primary" id="homeToHstats">Hitting Stats</button>
+						<button class="btn btn-primary" id="homeToPstats">Pitching Stats</button>
+					</div> -->
+				</div>
+				<div class="tab-pane fade" id="teams">
+					<h2>Add Team</h2>
+					<div class="row">
+						<div class="col-sm-4"></div>
+						<div class="col-sm-3">
+							<label for="teamName">New Team Name</label>
+							<input type="text" class="form-control" id="teamName" />
+							<br>
+							<button id="teamSave" class="btn btn-primary">Save</button>
+							<button class="btn btn-default" id="teamCancel">Cancel</button>
+						</div>
+						<div class="col-sm-5"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-4"></div>
+						<div class="col-sm-3">
+							<label>Teams:</label>
+							<select class="form-control" id="team-teamList"></select>
+							<button class="btn btn-danger" id="teamDelete">Delete</button>
+						</div>
+						<div class="col-sm-5"></div>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="players">
+					<h2>Add Players</h2>
+					<div class="row">
+						<div class="col-sm-4"></div>
+						<div class="col-sm-3">
+							<label>Team:</label>
+							<select class="form-control" id="player-teamList"></select>
+							<label>New Player Name:</label>
+							<input type="text" class="form-control" id="playerName" />	
+							<label>New Player Number:</label>
+							<input type="text" id="playerNumber" class="form-control"></input>
+							<br>
+							<button class="btn btn-primary" id="playerSave">Save</button>
+							<button class="btn btn-default" id="playerCancel">Cancel</button>
+						</div>
+						<div class="row">
+						<div class="col-sm-5"></div>
+							<div class="col-sm-2">
+								<label>Players:</label>
+								<select class="form-control" id="player-playerList"></select>
+								<button class="btn btn-danger" id="playerDelete">Delete</button>
+							</div>
+						<div class="col-sm-5"></div>
+					</div>
+						<div class="col-sm-5"></div>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="Hstats">
+					<h2>Hitting Stats</h2>
+					<div class="row">
+						<div class="col-sm-2"></div>
+							<div class="col-sm-3">
+								<label>Team:</label>
+								<select class="form-control" id="Hstats-teamList"></select>
+							</div>
+							<div class="col-sm-3">
+								<label>Players:</label>
+								<select class="form-control" id="Hstats-playerList"></select>
+							</div>
+							<div class="col-sm-1">
+								<label>Position:</label>
+								<select class="form-control" id="Hstats-positionList"></select>
+							</div>
+						<div class="col-sm-3"></div>
+					</div>
+					<br>
+					<br>
+					<div class="row">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-1">
+							<label>AB</label>
+							<input type="number" id="at-bats" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>1B</label>
+							<input type="number" id="singles" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>2B</label>
+							<input type="number" id="doubles" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>3B</label>
+							<input type="number" id="triples" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>HR</label>
+							<input type="number" id="home-runs" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>K</label>
+							<input type="number" id="strikeouts" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>BB</label>
+							<input type="number" id="walks" class="statField" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-1">
+							<label>HBP</label>
+							<input type="number" id="hit-by-pitches" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>SF</label>
+							<input type="number" id="sac-flies" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>RBI</label>
+							<input type="number" id="runs-batted-in" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>R</label>
+							<input type="number" id="runs" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>SB</label>
+							<input type="number" class="statField" id="stolen-bases" />
+						</div>
+						<div class="col-sm-1">
+							<label>CS</label>
+							<input type="number" class="statField" id="caught-stealing" />
+						</div>
+					</div>
+					<br>
+					<br>
+					<div class="row">
+						<div class="col-sm-1"></div>
+							<button id="tripSlash" class="btn btn-primary">AVG/OBP/SLG and OPS</button>
+							<button id="isoButton" class="btn btn-primary">ISO (Isolated Power)</button>
+							<button id="bbPerButton" class="btn btn-primary">BB%</button>
+							<button id="sbPerButton" class="btn btn-primary">SB%</button>
+							<button id="saveHStats" class="btn btn-primary" disabled>Save</button>
+						<div class="col-sm-2"></div>
+					</div>
+					<br>
+					<br>
+					<div class="row">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-1">
+							<label>AVG</label>
+							<input class="statField" type="number" id="avg" disabled />
+						</div>
+						<div class="col-sm-1">
+							<label>OBP</label>
+							<input type="number" class="statField" id="obp" disabled />
+						</div>
+						<div class="col-sm-1">
+							<label>SLG</label>
+							<input type="number" class="statField" id="slg" disabled />
+						</div>
+						<div class="col-sm-1">
+							<label>OPS</label>
+							<input type="number" class="statField" id="ops" disabled />
+						</div>
+						<div class="col-sm-1">
+							<label>ISO</label>
+							<input type="number" class="statField" id="isoField" disabled />
+						</div>
+						<div class="col-sm-1">
+							<label>K%</label>
+							<input type="number" class="statField" id="kPerField" disabled />
+						</div>
+						<div class="col-sm-1">
+							<label>BB%</label>
+							<input type="number" class="statField" id="bbPerField" disabled />
+						</div>
+						<div class="col-sm-1">
+							<label>SB%</label>
+							<input type="number" class="statField" id="sbPerField" disabled />
+						</div>
+					</div>
+					<br>
+					<br>
+					<div class="row">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-5">
+							<p id="statsP"></p>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="Pstats">
+					<h2>Pitching Stats</h2>
+					<div class="row">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-3">
+							<label>Team:</label>
+							<select class="form-control" id="Pstats-teamList"></select>
+						</div>
+						<div class="col-sm-3">
+							<label>Players:</label>
+							<select class="form-control" id="Pstats-playerList"></select>
+						</div>
+						<div class="col-sm-1">
+							<label>Position:</label>
+							<select class="form-control" id="Pstats-positionList"></select>
+						</div>
+						<div class="col-sm-3"></div>
+					</div>
+					<br>
+					<br>
+					<div class="row">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-1">
+							<label>IP</label>
+							<input type="number" id="inningsPitched" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>W</label>
+							<input type="number" id="wins" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>L</label>
+							<input type="number" id="losses" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>SV</label>
+							<input type="number" id="saves" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>ER</label>
+							<input type="number" id="earnedRunsAllowed" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>R</label>
+							<input type="number" id="runsAllowed" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>K</label>
+							<input type="number" id="battersStruckOut" class="statField" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-1">
+							<label>BB</label>
+							<input type="number" id="walksAllowed" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>H</label>
+							<input type="number" id="hitsAllowed" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>WP</label>
+							<input type="number" id="wildPitches" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>PO</label>
+							<input type="number" id="pickOffs" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>SB</label>
+							<input type="number" id="stolenBasesAllowed" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>CS</label>
+							<input type="number" id="runnersCaughtStealing" class="statField" />
+						</div>
+						<div class="col-sm-1">
+							<label>HR</label>
+							<input type="number" id="homeRunsAllowed" class="statField" />
+						</div>
+					</div>
+					<br>
+					<br>
+					<div class="row">
+						<div class="col-sm-1"></div>
+							<button id="ratios" class="btn btn-primary">ERA/RA/WHIP</button>
+							<button id="fipButton" class="btn btn-primary">FIP</button>
+							<button id="ksPer9Button" class="btn btn-primary">K/9</button>
+							<button id="walksPer9Button" class="btn btn-primary">BB/9</button>
+							<button id="csPerButton" class="btn btn-primary">CS%</button>
+							<button id="saveHStats" class="btn btn-primary" disabled>Save</button>
+						<div class="col-sm-2"></div>
+					</div>
+					<br>
+					<br>
+					<div class="row">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-1">
+							<label>ERA</label>
+							<input type="number" id="era" class="statField" disabled />
+						</div>
+						<div class="col-sm-1">
+							<label>WHIP</label>
+							<input type="number" id="whip" class="statField" disabled />
+						</div>
+						<div class="col-sm-1">
+							<label>RA</label>
+							<input type="number" id="ra" class="statField" disabled />
+						</div>
+						<div class="col-sm-1">
+							<label>K/9</label>
+							<input type="number" id="ksPer9" class="statField" disabled />
+						</div>
+						<div class="col-sm-1">
+							<label>BB/9</label>
+							<input type="number" id="walksPer9" class="statField" disabled />
+						</div>
+						<div class="col-sm-1">
+							<label>CS%</label>
+							<input type="number" id="csPerField" class="statField" disabled />
+						</div>
+					</div>
+					<br>
+					<br>
+					<div class="row">
+						<div class="col-sm-5">
+							<p id=PstatsP></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- login screen-->
+		<div class="modal fade" id="login-modal" role-"dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-lable="Close">
+						<span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Login</h4>
+					</div>
+					<div class="modal-body">
+						<div class="alert alert-danger" style="display:none;" role="alert" id="li_error"></div>
+						<label for="li_username">Email:</label>
+						<input class="form-control" id="li_email" />
+						<br>
+						<label for="li_password">Password:</label>
+						<input type="password" class="form-control" id="li_password" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button class="but btn-primary" id="login" type="button">Login</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- sign up screen-->
+		<div class="modal fade" id="signup-modal" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Sign Up</h4>
+					</div>
+					<div class="modal-body">
+						<div class="alert alert-danger" role="alert" style="display:none;" id="su_error"></div>
+						<label for="su_email">Email:</label>
+						<input type="text" id="su_email" />
+						<br>
+						<label for="su_username">Username:</label>
+						<input type="text" id="su_username" />
+						<br>
+						<label for="su_password">Password:</label>
+						<input type="password" id="su_password" />
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-default" type="button" data-dismiss="modal">Cancel</button>
+						<button id="signup" type="button" class="btn btn-primary">Signup</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- <script src="app.js"></script>
+		<script src="./user/auth.js"></script>
+		<script src="./rosters/teams.js"></script>
+		<script src="./rosters/players.js"></script>
+		<script src="./stats/hittingStats.js"></script>
+		<script src="./stats/pitchingStats.js"></script>
+		<script src="./stats/positions.js"></script> -->
+		<script src="./dist/bundle.js"></script>
+	</body> 
+</html>
