@@ -34,9 +34,11 @@ $(function() {
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
 		let target = $(e.target).attr("href"); //activated tab
 		if (target === "#teams") {
+			console.log("moving to teams tab");
 			BaseballChart.team.setTeams("team");
 		}
 		if (target === "#players") {
+			console.log("moving to players tab");
 			BaseballChart.team.setTeams("player");
 			BaseballChart.player.setPlayers("player")
 		}
