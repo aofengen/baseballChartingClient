@@ -53,24 +53,24 @@ $(function() {
 				$("#" + type + "-playerList").append(opts);
 			},
 			delete: function() {
-	 				let player = $("#player-playerList option:selected").text();
-	 				let deleteData = {player: player};
-	 				let deletePlayer = $.ajax({
-	 					type: "DELETE",
-	 					url: BaseballChart.API_BASE + "player",
-	 					data: JSON.stringify(deleteData),
-	 					contentType: "application/json"
-	 				});
-	 				for (let i = 0; i < BaseballChart.player.playerList.length; i++) {
-	 					if (BaseballChart.player.playerList[i].name == player) {
-	 						BaseballChart.player.playerList.splice(i, 1);
-	 					}
-	 				}
-	 				BaseballChart.player.setPlayers("player");
-	 				deletePlayer.fail(function() {
-	 					alert("Failed to delete");
-	 				});
-	 			},
+ 				let player = $("#player-playerList option:selected").text();
+ 				let deleteData = {player: player};
+ 				let deletePlayer = $.ajax({
+ 					type: "DELETE",
+ 					url: BaseballChart.API_BASE + "player",
+ 					data: JSON.stringify(deleteData),
+ 					contentType: "application/json"
+ 				});
+ 				for (let i = 0; i < BaseballChart.player.playerList.length; i++) {
+ 					if (BaseballChart.player.playerList[i].name == player) {
+ 						BaseballChart.player.playerList.splice(i, 1);
+ 					}
+ 				}
+ 				BaseballChart.player.setPlayers("player");
+ 				deletePlayer.fail(function() {
+ 					alert("Failed to delete");
+ 				});
+ 			}
 		}
 	})
 	$("#playerSave").on("click", BaseballChart.player.create);

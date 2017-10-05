@@ -33,11 +33,8 @@
 	 				});
 	 			},
 	 			setTeams: function(type) {
-	 				console.log("pre-fetch");
 	 				BaseballChart.team.fetchAll;
-	 				console.log("post-fetch");
 					let teams = BaseballChart.team.teamList;
-					console.log(teams);
 					let len = teams.length;
 					let opts;
 					for (let i = 0; i < len; i++) {

@@ -1,3 +1,54 @@
 .statField {
 	width: 85px;
 }
+
+body {
+	background-image: url('../img/background.jpg');
+	background-size: 100%; 
+}
+
+h1 {
+	font-size: 80px;
+	color: black;
+}
+
+h2 {
+	font-size: 50px;
+	text-align: center;
+	color: black
+	text-align: center;
+}
+
+h3 {
+	font-size: 30px;
+	color: black;
+	text-align: center;
+}
+
+h4 {
+	font-size: 20px;
+	color: black;
+	text-align: center;	
+}
+
+h5 {
+	font-size: 15px;
+	text-align: center;
+}
+
+label {
+	color: black;
+}
+
+.modalLabel {
+	color: black;
+}
+
+.nav {
+	background-color: black;
+}
+
+#loginPage {
+	margin: 20em;
+	text-align: center;
+}
