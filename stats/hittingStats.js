@@ -153,8 +153,7 @@ $(function() {
 				let playerInDB = false;
 				for (let i = 0; i < stats.length; i++) {
 					if (stats[i].player == playerName) {
-						playerInDB = true
-						break;
+						return playerInDB = true;
 					}
 				}
 				return playerInDB;
