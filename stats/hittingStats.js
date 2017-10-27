@@ -135,24 +135,23 @@ $(function() {
 				let playerInDB = BaseballChart.Hstats.isPlayerInDB();
 				console.log(playerInDB);
 				if (playerInDB === false) {
-					let statsBundle = {
+					let postData = {
 						team: team,
 						player: player,
-						atbats: atbats,
+						abs: atbats,
 						singles: singles,
 						doubles: doubles,
 						triples: triples,
-						homeruns: homeruns,
+						hrs: homeruns,
 						strikeouts: strikeouts,
 						walks: walks,
-						hitbypitches: hitbypitches,
-						sacflies: sacflies,
+						hpb: hitbypitches,
+						sf: sacflies,
 						rbis: rbis,
 						runs: runs,
-						stolenbases: stolenbases,
-						caughtstealing: caughtstealing
+						sb: stolenbases,
+						cs: caughtstealing
 					}
-					let postData = {hstats: statsBundle};
 					let newStats = $.ajax({
 						type: "POST",
 						url: BaseballChart.API_BASE + "hstats",
