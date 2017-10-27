@@ -116,7 +116,7 @@ $(function() {
 			},
 			saveStats: function() {
 				BaseballChart.Hstats.fetchStats()
-				let playerInDB = BaseballChart.Hstats.isPlayerInDB;
+				let playerInDB = BaseballChart.Hstats.isPlayerInDB();
 				if (playerInDB === false) {
 					let statsBundle = {
 						team: $("#Hstats-teamList option:selected").text(),
