@@ -1,6 +1,31 @@
 $(function() {
 	$.extend(BaseballChart, {
 		Hstats: {
+			stats: [],
+			setStats: function() {
+				BaseballChart.Hstats.fetchStats();
+				let playerName = $("#Hstats-playerList option:selected").text();
+				for (let i = 0; i < stats.length; i++) {
+					if (stats[i].player == playerName) {
+						$("#at-bats").val(stats[i].atbats)
+					}
+				}
+			},
+			fetchStats: function() {
+				let fetchStat = $.ajax({
+					type: "GET",
+					url: BaseballChart.API_BASE + "hstats",
+					headers: {
+						"authorization": window.localStorage.getItem("sessionToken")
+					}
+				})
+				.done(function(data) {
+					BaseballChart.Hstats.stats = data;
+				})
+				.fail(function(err) {
+					alert("Get player stats Failed: " + err);
+				});
+			},
 			getTripleSlash: function() {
 				let AB = Number.parseInt($("#at-bats").val());
 				let SI = Number.parseInt($("#singles").val());
@@ -88,6 +113,51 @@ $(function() {
 
 				document.getElementById("statsP").textContent = "Stolen Base Percentage (SB%) is the percent of successful stolen base " +
 				"by a runner. The higher the number, the better."
+			},
+			saveStats: function() {
+				BaseballChart.Hstats.fetchStats()
+				let player = BaseballChart.Hstats.isPlayerInDB;
+				if (playerInDB === false) {
+					let statsBundle = {
+						team: $("#Hstats-teamList option:selected").text(),
+						player: $("#Hstats-playerList option:selected").text(),
+						atbats: $("#at-bats").val(),
+						singles: $("#singles").val(),
+						doubles: $("#doubles").val(),
+						triples: $("#triples").val(),
+						homeruns: $("#home-runs").val(),
+						strikeouts: $("#strikeouts").val(),
+						walks: $("#walks").val(),
+						hitbypitches: $("#hit-by-pitches").val(),
+						sacflies: $("#sac-flies").val(),
+						rbis: $("#runs-batted-in").val(),
+						runs: $("#runs").val(),
+						stolenbases: $("#stolen-bases").val(),
+						caughtstealing: $("#caught-stealing").val()
+					};
+					let postData = {hstats: statsBundle};
+					let newStats = $.ajax({
+						type: "POST",
+						url: BaseballChart.API_BASE + "hstats",
+						data: JSON.stringify(postData),
+						contentType: "application/json"
+					});
+					alert("Player added to database");
+				} else {
+					alert("Player already in database");
+				}
+			},
+			isPlayerInDB: function() {
+				let stats = BaseballChart.Hstats.stats;
+				let playerName = $("#Hstats-playerList option:selected").text()
+				let playerInDB = false;
+				for (let i = 0; i < stats.length; i++) {
+					if (stats[i].player == playerName) {
+						playerInDB = true
+						break;
+					}
+				}
+				return playerInDB;
 			}
 		}
 	})
@@ -96,4 +166,5 @@ $(function() {
 	$("#kPerButton").on("click", BaseballChart.Hstats.getKPer);
 	$("#bbPerButton").on("click", BaseballChart.Hstats.getBBPer);
 	$("#sbPerButton").on("click", BaseballChart.Hstats.getSBPer);
+	$("#saveHStats").on("click", BaseballChart.Hstats.saveStats);
 })
