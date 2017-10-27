@@ -115,26 +115,43 @@ $(function() {
 				"by a runner. The higher the number, the better."
 			},
 			saveStats: function() {
-				BaseballChart.Hstats.fetchStats()
+				BaseballChart.Hstats.fetchStats();
+				let team = $("#Hstats-teamList option:selected").text();
+				let player = $("#Hstats-playerList option:selected").text();
+				let atbats = $("#at-bats").val();
+				let singles = $("#singles").val();
+				let doubles = $("#doubles").val();
+				let triples = $("#triples").val();
+				let homeruns = $("#home-runs").val();
+				let strikeouts = $("#strikeouts").val();
+				let walks = $("#walks").val();
+				let hitbypitches = $("#hit-by-pitches").val();
+				let sacflies = $("#sac-flies").val();
+				let rbis = $("#runs-batted-in").val();
+				let runs = $("#runs").val();
+				let stolenbases = $("#stolen-bases").val();
+				let caughtstealing = $("#caught-stealing").val();
+				
 				let playerInDB = BaseballChart.Hstats.isPlayerInDB();
+				console.log(playerInDB);
 				if (playerInDB === false) {
 					let statsBundle = {
-						team: $("#Hstats-teamList option:selected").text(),
-						player: $("#Hstats-playerList option:selected").text(),
-						atbats: $("#at-bats").val(),
-						singles: $("#singles").val(),
-						doubles: $("#doubles").val(),
-						triples: $("#triples").val(),
-						homeruns: $("#home-runs").val(),
-						strikeouts: $("#strikeouts").val(),
-						walks: $("#walks").val(),
-						hitbypitches: $("#hit-by-pitches").val(),
-						sacflies: $("#sac-flies").val(),
-						rbis: $("#runs-batted-in").val(),
-						runs: $("#runs").val(),
-						stolenbases: $("#stolen-bases").val(),
-						caughtstealing: $("#caught-stealing").val()
-					};
+						team: team,
+						player: player,
+						atbats: atbats,
+						singles: singles,
+						doubles: doubles,
+						triples: triples,
+						homeruns: homeruns,
+						strikeouts: strikeouts,
+						walks: walks,
+						hitbypitches: hitbypitches,
+						sacflies: sacflies,
+						rbis: rbis,
+						runs: runs,
+						stolenbases: stolenbases,
+						caughtstealing: caughtstealing
+					}
 					let postData = {hstats: statsBundle};
 					let newStats = $.ajax({
 						type: "POST",
