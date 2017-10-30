@@ -57,18 +57,18 @@ $(function() {
 				", and may not be a quality method of ranking a pitcher.*"
 			},
 			saveStats: function() {
-				let team = $("#Hstats-teamList option:selected").text();
-				let player = $("#Hstats-playerList option:selected").text();
-				let inningsPitched = $("#innings-pitched").val();
+				let team = $("#Pstats-teamList option:selected").text();
+				let player = $("#Pstats-playerList option:selected").text();
+				let inningsPitched = $("#inningsPitched").val();
 				let wins = $("#wins").val();
-				let losses = $("#loses").val();
+				let losses = $("#losses").val();
 				let saves = $("#saves").val();
 				let earnedrunsallowed = $("#earnedRunsAllowed").val();
-				let runsallowed = $("runsAllowed").val();
+				let runsallowed = $("#runsAllowed").val();
 				let strikeouts = $("#battersStruckOut").val();
 				let walksallowed = $("#walksAllowed").val();
 				let hits = $("#hitsAllowed").val();
-				let wildpitches = $("#sacwildPitches").val();
+				let wildpitches = $("#wildPitches").val();
 				let pickoffs = $("#pickOffs").val();
 				let stolenbases = $("#stolenBasesAllowed").val();
 				let caughtstealing = $("#runnersCaughtStealing").val();
