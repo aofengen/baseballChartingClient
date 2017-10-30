@@ -2,6 +2,10 @@
 	width: 85px;
 }
 
+li {
+	color: white;
+}
+
 body {
 	background-image: url('../img/background.jpg');
 	background-size: 100%; 
