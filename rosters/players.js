@@ -77,6 +77,6 @@ $(function() {
 	$("#playerCancel").on("click", BaseballChart.player.cancel);
 	$("#playerDelete").on("click", BaseballChart.player.delete);
 	if (window.localStorage.getItem("sessionToken")) {
- 			BaseballChart.player.fetchAll();
- 		}
+ 		BaseballChart.player.fetchAll();
+ 	}
 })

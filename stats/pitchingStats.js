@@ -106,5 +106,5 @@ $(function() {
 	$("#ksPer9Button").on("click", BaseballChart.Pstats.getK9);
 	$("#walksPer9Button").on("click", BaseballChart.Pstats.getBB9);
 	$("#csPerButton").on("click", BaseballChart.Pstats.getCSPer);
-	$("savePStats").on("click", BaseballChart.Pstats.saveStats);
+	$("#savePStats").on("click", BaseballChart.Pstats.saveStats);
 })
