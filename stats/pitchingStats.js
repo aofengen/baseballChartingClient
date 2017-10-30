@@ -56,7 +56,7 @@ $(function() {
 				"against a pitcher. The lower the number, the better. *NOTE: This stat is heavily affected by the catcher behind the plate" +
 				", and may not be a quality method of ranking a pitcher.*"
 			},
-			savePStats: function() {
+			saveStats: function() {
 				let team = $("#Hstats-teamList option:selected").text();
 				let player = $("#Hstats-playerList option:selected").text();
 				let inningsPitched = $("#innings-pitched").val();
