@@ -133,7 +133,6 @@ $(function() {
 				let caughtstealing = $("#caught-stealing").val();
 				
 				let playerInDB = BaseballChart.Hstats.isPlayerInDB();
-				console.log(playerInDB);
 				if (playerInDB === false) {
 					let postData = {
 						team: team,
@@ -145,7 +144,7 @@ $(function() {
 						hrs: homeruns,
 						strikeouts: strikeouts,
 						walks: walks,
-						hpb: hitbypitches,
+						hbp: hitbypitches,
 						sf: sacflies,
 						rbis: rbis,
 						runs: runs,
@@ -165,13 +164,19 @@ $(function() {
 			},
 			isPlayerInDB: function() {
 				let stats = BaseballChart.Hstats.stats;
-				let playerName = $("#Hstats-playerList option:selected").text()
+				console.log(BaseballChart.Hstats.stats);
+				let playerName = $("#Hstats-playerList option:selected").text();
+				console.log(playerName);
 				let playerInDB = false;
 				for (let i = 0; i < stats.length; i++) {
+					console.log(stats[i]);
 					if (stats[i].player == playerName) {
-						return playerInDB = true;
+						playerInDB = true;
+						console.log("1 " + playerInDB);
 					}
+					console.log("2 " + playerInDB);
 				}
+				console.log("3 " + playerInDB);
 				return playerInDB;
 			}
 		}

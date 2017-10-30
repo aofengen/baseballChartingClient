@@ -55,6 +55,50 @@ $(function() {
 				document.getElementById("PstatsP").textContent = "Stolen Base Percentage (SB%) is the percent of successful stolen bases " +
 				"against a pitcher. The lower the number, the better. *NOTE: This stat is heavily affected by the catcher behind the plate" +
 				", and may not be a quality method of ranking a pitcher.*"
+			},
+			savePStats: function() {
+				let team = $("#Hstats-teamList option:selected").text();
+				let player = $("#Hstats-playerList option:selected").text();
+				let inningsPitched = $("#innings-pitched").val();
+				let wins = $("#wins").val();
+				let losses = $("#loses").val();
+				let saves = $("#saves").val();
+				let earnedrunsallowed = $("#earnedRunsAllowed").val();
+				let runsallowed = $("runsAllowed").val();
+				let strikeouts = $("#battersStruckOut").val();
+				let walksallowed = $("#walksAllowed").val();
+				let hits = $("#hitsAllowed").val();
+				let wildpitches = $("#sacwildPitches").val();
+				let pickoffs = $("#pickOffs").val();
+				let stolenbases = $("#stolenBasesAllowed").val();
+				let caughtstealing = $("#runnersCaughtStealing").val();
+				let homerunsallowed = $("#homeRunsAllowed").val();
+
+				let postData = {
+					team: team,
+					player: player,
+					ip: inningsPitched,
+					wins: wins,
+					losses: losses,
+					saves: saves,
+					er: earnedrunsallowed,
+					r: runsallowed,
+					strikeouts: strikeouts,
+					walksallowed: walksallowed,
+					hits: hits,
+					wp: wildpitches,
+					po: pickoffs,
+					sb: stolenbases,
+					cs: caughtstealing,
+					hr: homerunsallowed
+				}
+				let newStats = $.ajax({
+					type: "POST",
+					url: BaseballChart.API_BASE + "pstats",
+					data: JSON.stringify(postData),
+					contentType: "application/json"
+				});
+				alert("Player added to database");
 			}
 		}
 	})
@@ -62,4 +106,5 @@ $(function() {
 	$("#ksPer9Button").on("click", BaseballChart.Pstats.getK9);
 	$("#walksPer9Button").on("click", BaseballChart.Pstats.getBB9);
 	$("#csPerButton").on("click", BaseballChart.Pstats.getCSPer);
+	$("savePStats").on("click", BaseballChart.Pstats.saveStats);
 })

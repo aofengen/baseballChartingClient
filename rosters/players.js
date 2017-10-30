@@ -47,7 +47,7 @@ $(function() {
 				let len = players.length;
 				let opts;
 				for (let i = 0; i < len; i++) {
-					opts += "<option value='" + players[i].id +"'>" + players[i].name + " (" + players[i].number + ") </option>";
+					opts += "<option value='" + players[i].id +"'>" + players[i].name + "</option>";
 				}
 				$("#" + type + "-playerList").children().remove();
 				$("#" + type + "-playerList").append(opts);
