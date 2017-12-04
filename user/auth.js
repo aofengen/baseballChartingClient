@@ -79,6 +79,8 @@ $(function(){
 				login.done(function(data) {
 					if (data.sessionToken) {
 						BaseballChart.setAuthHeader(data.sessionToken);
+						BaseballChart.team.fetchAll();
+						BaseballChart.player.fetchAll();
 						$("#userName").text(user.username);
 					}
 					$("#login-modal").modal("hide");
