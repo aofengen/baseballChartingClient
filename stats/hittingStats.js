@@ -1,17 +1,9 @@
 $(function() {
 	$.extend(BaseballChart, {
-		Hstats: {
-			stats: [],
-			setStats: function() {
-				BaseballChart.Hstats.fetchStats();
-				let playerName = $("#Hstats-playerList option:selected").text();
-				for (let i = 0; i < stats.length; i++) {
-					if (stats[i].player == playerName) {
-						$("#at-bats").val(stats[i].atbats)
-					}
-				}
-			},
-			fetchStats: function() {
+		hstats: {
+			statsList: [],
+			fetchAll: function() {
+				//BUG: requires fetchAll to run twice before info will appear. Will run first time when tab is clicked, second when button is clicked
 				let fetchStat = $.ajax({
 					type: "GET",
 					url: BaseballChart.API_BASE + "hstats",
@@ -20,7 +12,8 @@ $(function() {
 					}
 				})
 				.done(function(data) {
-					BaseballChart.Hstats.stats = data;
+					BaseballChart.hstats.statsList.splice(0);
+					BaseballChart.hstats.statsList = data;
 				})
 				.fail(function(err) {
 					alert("Get player stats Failed: " + err);
@@ -52,7 +45,7 @@ $(function() {
 				'them by the total number of at bats (H/AB). The on base percentage (OBP) is calculated by adding the number of hits, walks, and ' +
 				'hit by pitches, then dividing that number by the total number of at bats, walks, hit by pitches, and sacrifice flies (H+BB+HBP' +
 				'/AB+BB+HBP+SF). The slugging percentage (SLG) is calculated by adding the total number of bases, then dividing by the total ' +
-				'number of at bats. When finding the total number of bases, a single equals 1 base, a double  2 bases, a triple 3 bases,' +
+				'number of at bats. When finding the total number of bases, a single equals 1 base, a double 2 bases, a triple 3 bases,' +
 				' and a home run 4 bases ( (1B + (2B * 2) + (3B * 3) + (HR * 4))/(AB) ). On base Plus Slugging (OPS) is exactly as it sounds: ' +
 				'add the OBP and SLG numbers together.';
 			},
@@ -115,7 +108,6 @@ $(function() {
 				"by a runner. The higher the number, the better."
 			},
 			saveStats: function() {
-				BaseballChart.Hstats.fetchStats();
 				let team = $("#Hstats-teamList option:selected").text();
 				let player = $("#Hstats-playerList option:selected").text();
 				let atbats = $("#at-bats").val();
@@ -132,7 +124,7 @@ $(function() {
 				let stolenbases = $("#stolen-bases").val();
 				let caughtstealing = $("#caught-stealing").val();
 				
-				let playerInDB = BaseballChart.Hstats.isPlayerInDB();
+				let playerInDB = BaseballChart.hstats.isPlayerInDB(player);
 				if (playerInDB === false) {
 					let postData = {
 						team: team,
@@ -162,29 +154,56 @@ $(function() {
 					alert("Player already in database");
 				}
 			},
-			isPlayerInDB: function() {
-				let stats = BaseballChart.Hstats.stats;
-				console.log(BaseballChart.Hstats.stats);
-				let playerName = $("#Hstats-playerList option:selected").text();
-				console.log(playerName);
+			isPlayerInDB: function(playerName) {
+				BaseballChart.hstats.fetchAll();
+				let stats = BaseballChart.hstats.statsList;
 				let playerInDB = false;
-				for (let i = 0; i < stats.length; i++) {
-					console.log(stats[i]);
-					if (stats[i].player == playerName) {
-						playerInDB = true;
-						console.log("1 " + playerInDB);
+				for (let i = 0; i <= stats.length; i++) {
+					if (i == stats.length) {
+						break;
+					} else if (stats[i].player == playerName) {
+						return playerInDB = true;
 					}
-					console.log("2 " + playerInDB);
 				}
-				console.log("3 " + playerInDB);
 				return playerInDB;
+			},
+			setStats: function() {
+				let hittingStats = BaseballChart.hstats.statsList;
+				let playerName = $("#Hstats-playerList option:selected").text();
+				if (hittingStats.length < 1) {
+					BaseballChart.hstats.fetchAll();
+					alert("Failed to get stats. Please try again");
+				} else {
+					for (let i = 0; i <= hittingStats.length; i++) {
+						if (i == hittingStats.length) {
+							BaseballChart.hstats.fetchAll();
+							alert("Player not found in database. Please save stats first or try again.");
+						} else if (hittingStats[i].player == playerName) {
+							$("#at-bats").val(hittingStats[i].atbats);
+							$("#singles").val(hittingStats[i].singles);
+							$("#doubles").val(hittingStats[i].doubles);
+							$("#triples").val(hittingStats[i].triples);
+							$("#home-runs").val(hittingStats[i].homeruns);
+							$("#strikeouts").val(hittingStats[i].strikeouts);
+							$("#walks").val(hittingStats[i].walks);
+							$("#hit-by-pitches").val(hittingStats[i].hitbypitches);
+							$("#sac-flies").val(hittingStats[i].sacflies);
+							$("#runs-batted-in").val(hittingStats[i].rbis);
+							$("#runs").val(hittingStats[i].runs);
+							$("#stolen-bases").val(hittingStats[i].stolenbases);
+							$("#caught-stealing").val(hittingStats[i].caughtstealing);
+							break;
+						}
+					}
+				}
 			}
 		}
 	})
-	$("#tripSlash").on("click", BaseballChart.Hstats.getTripleSlash);
-	$("#isoButton").on("click", BaseballChart.Hstats.getISO);
-	$("#kPerButton").on("click", BaseballChart.Hstats.getKPer);
-	$("#bbPerButton").on("click", BaseballChart.Hstats.getBBPer);
-	$("#sbPerButton").on("click", BaseballChart.Hstats.getSBPer);
-	$("#saveHStats").on("click", BaseballChart.Hstats.saveStats);
+	$("#tripSlash").on("click", BaseballChart.hstats.getTripleSlash);
+	$("#isoButton").on("click", BaseballChart.hstats.getISO);
+	$("#kPerButton").on("click", BaseballChart.hstats.getKPer);
+	$("#bbPerButton").on("click", BaseballChart.hstats.getBBPer);
+	$("#sbPerButton").on("click", BaseballChart.hstats.getSBPer);
+	$("#saveHStats").on("click", BaseballChart.hstats.saveStats);
+	$("#getHStats").on("click", BaseballChart.hstats.setStats);
 })
