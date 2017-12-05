@@ -52,6 +52,9 @@ $(function() {
 			BaseballChart.team.setTeams("Pstats");
 			BaseballChart.player.setPlayers("Pstats");
 			// BaseballChart.position.setPositions(true, "Pstats");
+			if (BaseballChart.Pstats.statsList.length < 1) {
+				BaseballChart.Pstats.fetchAll();
+			}
 		}
 	});
 

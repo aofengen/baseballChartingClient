@@ -1,6 +1,7 @@
 $(function() {
 	$.extend(BaseballChart, {
 		Pstats: {
+			statsList: [],
 			getRatios: function() {
 				let ER = Number.parseInt($("#earnedRunsAllowed").val());
 				let R = Number.parseInt($("#runsAllowed").val());
@@ -54,7 +55,20 @@ $(function() {
 
 				document.getElementById("PstatsP").textContent = "Stolen Base Percentage (SB%) is the percent of successful stolen bases " +
 				"against a pitcher. The lower the number, the better. *NOTE: This stat is heavily affected by the catcher behind the plate" +
-				", and may not be a quality method of ranking a pitcher.*"
+				", and may not be a quality method of ranking pitchers.*"
+			},
+			isPlayerInDB: function(playerName) {
+				BaseballChart.Pstats.fetchAll();
+				let stats = BaseballChart.Pstats.statsList;
+				let playerInDB = false;
+				for (let i = 0; i <= stats.length; i++) {
+					if (i == stats.length) {
+						break;
+					} else if (stats[i].player == playerName) {
+						return playerInDB = true;
+					}
+				}
+				return playerInDB;
 			},
 			saveStats: function() {
 				let team = $("#Pstats-teamList option:selected").text();
@@ -74,31 +88,164 @@ $(function() {
 				let caughtstealing = $("#runnersCaughtStealing").val();
 				let homerunsallowed = $("#homeRunsAllowed").val();
 
-				let postData = {
-					team: team,
-					player: player,
-					ip: inningsPitched,
-					wins: wins,
-					losses: losses,
-					saves: saves,
-					er: earnedrunsallowed,
-					r: runsallowed,
-					strikeouts: strikeouts,
-					walksallowed: walksallowed,
-					hits: hits,
-					wp: wildpitches,
-					po: pickoffs,
-					sb: stolenbases,
-					cs: caughtstealing,
-					hr: homerunsallowed
+				let playerInDB = BaseballChart.Pstats.isPlayerInDB(player);
+				if (playerInDB === false) {
+					let postData = {
+						team: team,
+						player: player,
+						ip: inningsPitched,
+						wins: wins,
+						losses: losses,
+						saves: saves,
+						er: earnedrunsallowed,
+						r: runsallowed,
+						strikeouts: strikeouts,
+						walksallowed: walksallowed,
+						hits: hits,
+						wp: wildpitches,
+						po: pickoffs,
+						sb: stolenbases,
+						cs: caughtstealing,
+						hr: homerunsallowed
+					}
+					let newStats = $.ajax({
+						type: "POST",
+						url: BaseballChart.API_BASE + "pstats",
+						data: JSON.stringify(postData),
+						contentType: "application/json"
+					});
+					newStats.fail(function() {
+						alert("Failed to add " + player + "\'s pitching stats. Please try again.")
+					})
+					alert(player + "\'s pitching stats added to database");
+				} else {
+					let postData = {
+						player: player,
+						ip: inningsPitched,
+						wins: wins,
+						losses: losses,
+						saves: saves,
+						er: earnedrunsallowed,
+						r: runsallowed,
+						strikeouts: strikeouts,
+						walksallowed: walksallowed,
+						hits: hits,
+						wp: wildpitches,
+						po: pickoffs,
+						sb: stolenbases,
+						cs: caughtstealing,
+						hr: homerunsallowed
+					}
+					let newStats = $.ajax({
+						type: "PUT",
+						url: BaseballChart.API_BASE + "pstats",
+						data: JSON.stringify(postData),
+						contentType: "application/json"
+					});
+					newStats.fail(function() {
+						alert("Failed to update " + player + "\'s pitching stats. Please try again.")
+					})
+					alert(player + "\'s pitching stats were updated.")
 				}
-				let newStats = $.ajax({
-					type: "POST",
+			},
+			clearStats: function() {
+				$("#inningsPitched").val("");
+				$("#wins").val("");
+				$("#losses").val("");
+				$("#saves").val("");
+				$("#earnedRunsAllowed").val("");
+				$("#runsAllowed").val("");
+				$("#battersStruckOut").val("");
+				$("#walksAllowed").val("");
+				$("#hitsAllowed").val("");
+				$("#wildPitches").val("");
+				$("#pickOffs").val("");
+				$("#stolenBasesAllowed").val("");
+				$("#runnersCaughtStealing").val("");
+				$("#homeRunsAllowed").val("");
+			},
+			fetchAll: function() {
+				//BUG: requires fetchAll to run twice before info will appear. Will run first time when tab is clicked, second when button is clicked
+				let fetchStat = $.ajax({
+					type: "GET",
 					url: BaseballChart.API_BASE + "pstats",
-					data: JSON.stringify(postData),
-					contentType: "application/json"
+					headers: {
+						"authorization": window.localStorage.getItem("sessionToken")
+					}
+				})
+				.done(function(data) {
+					BaseballChart.Pstats.statsList.splice(0);
+					BaseballChart.Pstats.statsList = data;
+				})
+				.fail(function(err) {
+					alert("Get player stats Failed: " + err);
 				});
-				alert("Player added to database");
+			},
+			setStats: function() {
+				BaseballChart.Pstats.clearStats();
+				let stats = BaseballChart.Pstats.statsList;
+				let playerName = $("#Pstats-playerList option:selected").text();
+				if (stats.length < 1) {
+					BaseballChart.Pstats.fetchAll();
+					alert("Failed to get stats. Please try again");
+				} else {
+					for (let i = 0; i <= stats.length; i++) {
+						if (i == stats.length) {
+							BaseballChart.Pstats.fetchAll();
+							alert(playerName + " not found in database. Please save stats first or try again.");
+						} else if (stats[i].player == playerName) {
+							$("#inningsPitched").val(stats[i].IP);
+							$("#wins").val(stats[i].wins);
+							$("#losses").val(stats[i].losses);
+							$("#saves").val(stats[i].saves);
+							$("#earnedRunsAllowed").val(stats[i].earnedrunsallowed);
+							$("#runsAllowed").val(stats[i].runsallowed);
+							$("#battersStruckOut").val(stats[i].strikeouts);
+							$("#walksAllowed").val(stats[i].walksallowed);
+							$("#hitsAllowed").val(stats[i].hits);
+							$("#wildPitches").val(stats[i].wildpitches);
+							$("#pickOffs").val(stats[i].pickoffs);
+							$("#stolenBasesAllowed").val(stats[i].stolenbases);
+							$("#runnersCaughtStealing").val(stats[i].caughtstealing);
+							$("#homeRunsAllowed").val(stats[i].homerunsallowed);
+							break;
+						}
+					}
+				}
+			},
+			deleteStats: function() {
+				let playerName = $("#Pstats-playerList option:selected").text();
+				let playerInDB = BaseballChart.Pstats.isPlayerInDB(playerName);
+				if (playerInDB === false) {
+					alert(playerName + " has no pitching stats in the database");
+				} else {
+					let deleteConfirm = confirm("Are you sure you want to delete the pitching stats for " + playerName + "?");
+					if (deleteConfirm === false) {
+						alert(playerName + "\'s pitching stats were not deleted.");
+					} else {
+						let stats = BaseballChart.Pstats.statsList;
+						for (let i = 0; i <= stats.length; i++) {
+							if (i == length) {
+								alert(playerName + " does not have pitching stats in the database");
+							} else if (stats[i].player == playerName) {
+								let deleteData = {player: playerName};
+								let deletePlayerStats = $.ajax({
+									type: "DELETE",
+									url: BaseballChart.API_BASE + "pstats",
+									data: JSON.stringify(deleteData),
+									contentType: "application/json"
+								});
+								deletePlayerStats.fail(function() {
+									alert("Failed to delete " + playerName + "\'s pitching stats. Please try again");
+								});
+								BaseballChart.Pstats.clearStats();
+								BaseballChart.Pstats.fetchAll();
+								alert(playerName + "\'s pitching stats were deleted.");
+								i += stats.length;
+							}
+						}
+					}
+				}
 			}
 		}
 	})
@@ -107,4 +254,7 @@ $(function() {
 	$("#walksPer9Button").on("click", BaseballChart.Pstats.getBB9);
 	$("#csPerButton").on("click", BaseballChart.Pstats.getCSPer);
 	$("#savePStats").on("click", BaseballChart.Pstats.saveStats);
+	$("#getPStats").on("click", BaseballChart.Pstats.setStats);
+	$("#clearPStats").on("click", BaseballChart.Pstats.clearStats);
+	$("#deletePStats").on("click", BaseballChart.Pstats.deleteStats)
 })

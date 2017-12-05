@@ -41,7 +41,7 @@ $(function() {
 				$("#slg").val(SLG.toFixed(3));
 				$("#ops").val(OPS.toFixed(3));
 
-				document.getElementById("statsP").textContent = 'Also known as the Triple Slash line. The average AVG is calculated by taking the number of hits and divding ' +
+				document.getElementById("statsP").textContent = 'Also known as the Triple Slash line. The average (AVG) is calculated by taking the number of hits and divding ' +
 				'them by the total number of at bats (H/AB). The on base percentage (OBP) is calculated by adding the number of hits, walks, and ' +
 				'hit by pitches, then dividing that number by the total number of at bats, walks, hit by pitches, and sacrifice flies (H+BB+HBP' +
 				'/AB+BB+HBP+SF). The slugging percentage (SLG) is calculated by adding the total number of bases, then dividing by the total ' +
@@ -149,10 +149,12 @@ $(function() {
 						data: JSON.stringify(postData),
 						contentType: "application/json"
 					});
-					alert(player + "\'s stats added to database");
+					newStats.fail(function() {
+						alert("Failed to add " + player + "\'s hitting stats. Please try again.")
+					})
+					alert(player + "\'s hitting stats added to database");
 				} else {
 					let postData = {
-						team: team,
 						player: player,
 						abs: atbats,
 						singles: singles,
@@ -174,8 +176,11 @@ $(function() {
 						data: JSON.stringify(postData),
 						contentType: "application/json"
 					});
+					newStats.fail(function() {
+						alert("Failed to update " + player + "\'s hitting stats. Please try again.")
+					})
 					BaseballChart.hstats.fetchAll();
-					alert(player + "\'s stats have been updated.");
+					alert(player + "\'s hitting stats have been updated.");
 				}
 			},
 			isPlayerInDB: function(playerName) {
@@ -197,12 +202,12 @@ $(function() {
 				let playerName = $("#Hstats-playerList option:selected").text();
 				if (hittingStats.length < 1) {
 					BaseballChart.hstats.fetchAll();
-					alert("Failed to get stats. Please try again");
+					alert("Failed to get hitting stats. Please try again");
 				} else {
 					for (let i = 0; i <= hittingStats.length; i++) {
 						if (i == hittingStats.length) {
 							BaseballChart.hstats.fetchAll();
-							alert("Player not found in database. Please save stats first or try again.");
+							alert("Player not found in database. Please save hitting stats first or try again.");
 						} else if (hittingStats[i].player == playerName) {
 							$("#at-bats").val(hittingStats[i].atbats);
 							$("#singles").val(hittingStats[i].singles);
@@ -241,16 +246,16 @@ $(function() {
 				let playerName = $("#Hstats-playerList option:selected").text();
 				let playerInDB = BaseballChart.hstats.isPlayerInDB(playerName);
 				if (playerInDB === false) {
-					alert(playerName + " has no stats in the database");
+					alert(playerName + " has no hitting stats in the database");
 				} else {
-					let deleteConfirm = confirm("Are you sure you want to delete stats for " + playerName + "?");
+					let deleteConfirm = confirm("Are you sure you want to delete hitting stats for " + playerName + "?");
 					if (deleteConfirm === false) {
-						alert(playerName + "\'s stats were not deleted.");
+						alert(playerName + "\'s hitting stats were not deleted.");
 					} else {
 						let stats = BaseballChart.hstats.statsList;
 						for (let i = 0; i <= stats.length; i++) {
 							if (i == length) {
-								alert(playerName + " has no stats in the database");
+								alert(playerName + " has hitting no stats in the database");
 							} else if (stats[i].player == playerName) {
 								let deleteData = {player: playerName};
 								let deletePlayerStats = $.ajax({
@@ -260,11 +265,11 @@ $(function() {
 									contentType: "application/json"
 								});
 								deletePlayerStats.fail(function() {
-									alert("Failed to delete " + playerName + "\'s stats. Please try again");
+									alert("Failed to delete " + playerName + "\'s hitting stats. Please try again");
 								});
 								BaseballChart.hstats.clearStats();
 								BaseballChart.hstats.fetchAll();
-								alert(playerName + "\'s stats were deleted.");
+								alert(playerName + "\'s hitting stats were deleted.");
 								i += stats.length;
 							}
 						}

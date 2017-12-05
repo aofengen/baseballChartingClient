@@ -2,6 +2,11 @@
 	width: 85px;
 }
 
+p {
+	font-weight: bold;
+	text-shadow: -1px -1px white;
+}
+
 li {
 	color: white;
 }
