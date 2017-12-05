@@ -151,7 +151,31 @@ $(function() {
 					});
 					alert(player + "\'s stats added to database");
 				} else {
-					alert(player + " already has stats in database");
+					let postData = {
+						team: team,
+						player: player,
+						abs: atbats,
+						singles: singles,
+						doubles: doubles,
+						triples: triples,
+						hrs: homeruns,
+						strikeouts: strikeouts,
+						walks: walks,
+						hbp: hitbypitches,
+						sf: sacflies,
+						rbis: rbis,
+						runs: runs,
+						sb: stolenbases,
+						cs: caughtstealing
+					}
+					let newStats = $.ajax({
+						type: "PUT",
+						url: BaseballChart.API_BASE + "hstats",
+						data: JSON.stringify(postData),
+						contentType: "application/json"
+					});
+					BaseballChart.hstats.fetchAll();
+					alert(player + "\'s stats have been updated.");
 				}
 			},
 			isPlayerInDB: function(playerName) {
@@ -217,7 +241,7 @@ $(function() {
 				let playerName = $("#Hstats-playerList option:selected").text();
 				let playerInDB = BaseballChart.hstats.isPlayerInDB(playerName);
 				if (playerInDB === false) {
-					console.log(playerName + " has no stats in the database");
+					alert(playerName + " has no stats in the database");
 				} else {
 					let deleteConfirm = confirm("Are you sure you want to delete stats for " + playerName + "?");
 					if (deleteConfirm === false) {
@@ -226,7 +250,7 @@ $(function() {
 						let stats = BaseballChart.hstats.statsList;
 						for (let i = 0; i <= stats.length; i++) {
 							if (i == length) {
-								console.log(playerName + " has no stats in the database");
+								alert(playerName + " has no stats in the database");
 							} else if (stats[i].player == playerName) {
 								let deleteData = {player: playerName};
 								let deletePlayerStats = $.ajax({
@@ -240,7 +264,7 @@ $(function() {
 								});
 								BaseballChart.hstats.clearStats();
 								BaseballChart.hstats.fetchAll();
-								console.log(playerName + "\'s stats were deleted.");
+								alert(playerName + "\'s stats were deleted.");
 								i += stats.length;
 							}
 						}
