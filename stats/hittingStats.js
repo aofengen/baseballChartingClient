@@ -149,9 +149,9 @@ $(function() {
 						data: JSON.stringify(postData),
 						contentType: "application/json"
 					});
-					alert("Player added to database");
+					alert(player + "\'s stats added to database");
 				} else {
-					alert("Player already in database");
+					alert(player + " already has stats in database");
 				}
 			},
 			isPlayerInDB: function(playerName) {
@@ -168,6 +168,7 @@ $(function() {
 				return playerInDB;
 			},
 			setStats: function() {
+				BaseballChart.hstats.clearStats();
 				let hittingStats = BaseballChart.hstats.statsList;
 				let playerName = $("#Hstats-playerList option:selected").text();
 				if (hittingStats.length < 1) {
@@ -196,6 +197,55 @@ $(function() {
 						}
 					}
 				}
+			},
+			clearStats: function() {
+				$("#at-bats").val("");
+				$("#singles").val("");
+				$("#doubles").val("");
+				$("#triples").val("");
+				$("#home-runs").val("");
+				$("#strikeouts").val("");
+				$("#walks").val("");
+				$("#hit-by-pitches").val("");
+				$("#sac-flies").val("");
+				$("#runs-batted-in").val("");
+				$("#runs").val("");
+				$("#stolen-bases").val("");
+				$("#caught-stealing").val("");
+			},
+			deleteStats: function() {
+				let playerName = $("#Hstats-playerList option:selected").text();
+				let playerInDB = BaseballChart.hstats.isPlayerInDB(playerName);
+				if (playerInDB === false) {
+					console.log(playerName + " has no stats in the database");
+				} else {
+					let deleteConfirm = confirm("Are you sure you want to delete stats for " + playerName + "?");
+					if (deleteConfirm === false) {
+						alert(playerName + "\'s stats were not deleted.");
+					} else {
+						let stats = BaseballChart.hstats.statsList;
+						for (let i = 0; i <= stats.length; i++) {
+							if (i == length) {
+								console.log(playerName + " has no stats in the database");
+							} else if (stats[i].player == playerName) {
+								let deleteData = {player: playerName};
+								let deletePlayerStats = $.ajax({
+									type: "DELETE",
+									url: BaseballChart.API_BASE + "hstats",
+									data: JSON.stringify(deleteData),
+									contentType: "application/json"
+								});
+								deletePlayerStats.fail(function() {
+									alert("Failed to delete " + playerName + "\'s stats. Please try again");
+								});
+								BaseballChart.hstats.clearStats();
+								BaseballChart.hstats.fetchAll();
+								console.log(playerName + "\'s stats were deleted.");
+								i += stats.length;
+							}
+						}
+					}
+				}
 			}
 		}
 	})
@@ -206,4 +256,6 @@ $(function() {
 	$("#sbPerButton").on("click", BaseballChart.hstats.getSBPer);
 	$("#saveHStats").on("click", BaseballChart.hstats.saveStats);
 	$("#getHStats").on("click", BaseballChart.hstats.setStats);
+	$("#clearHStats").on("click", BaseballChart.hstats.clearStats);
+	$("#deleteHStats").on("click", BaseballChart.hstats.deleteStats);
 })
