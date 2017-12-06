@@ -81,6 +81,8 @@ $(function(){
 						BaseballChart.setAuthHeader(data.sessionToken);
 						BaseballChart.team.fetchAll();
 						BaseballChart.player.fetchAll();
+						BaseballChart.position.fetchHitters();
+						BaseballChart.position.fetchPitchers();
 						$("#userName").text(user.username);
 					}
 					$("#login-modal").modal("hide");

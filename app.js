@@ -43,7 +43,10 @@ $(function() {
 		if (target === "#Hstats") {
 			BaseballChart.team.setTeams("Hstats");
 			BaseballChart.player.setPlayers("Hstats");
-			// BaseballChart.position.setPositions(false, "Hstats");
+			if (BaseballChart.position.hPositionList.length < 1) {
+				BaseballChart.position.fetchHitters();
+			}	
+			BaseballChart.position.setHitters();
 			if (BaseballChart.hstats.statsList.length < 1) {
 				BaseballChart.hstats.fetchAll();
 			} 
@@ -51,7 +54,10 @@ $(function() {
 		if (target === "#Pstats") {
 			BaseballChart.team.setTeams("Pstats");
 			BaseballChart.player.setPlayers("Pstats");
-			// BaseballChart.position.setPositions(true, "Pstats");
+			if (BaseballChart.position.pPositionList.length < 1) {
+				BaseballChart.position.fetchPitchers();
+			}
+			BaseballChart.position.setPitchers();
 			if (BaseballChart.Pstats.statsList.length < 1) {
 				BaseballChart.Pstats.fetchAll();
 			}
