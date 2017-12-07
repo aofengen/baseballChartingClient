@@ -52,9 +52,22 @@ $(function() {
 				$("#" + type + "-playerList").children().remove();
 				$("#" + type + "-playerList").append(opts);
 			},
+			setPlayersOnTeam: function(teamName) {
+				let players = BaseballChart.player.playerList;
+				let len = players.length;
+				let opts;
+				for (let i = 0; i < len; i++) {
+					if (players[i].teamName == teamName) {
+						opts += "<option value='" + players[i].id +"'>" + players[i].name + "</option>";
+					}
+				}
+				$("#" + type + "-playerList").children().remove();
+				$("#" + type + "-playerList").append(opts);
+			},
 			delete: function() {
+				let team = $("#player-teamList option:selected").text();
  				let player = $("#player-playerList option:selected").text();
- 				let deleteData = {player: player};
+ 				let deleteData = {team: team, player: player};
  				let deletePlayer = $.ajax({
  					type: "DELETE",
  					url: BaseballChart.API_BASE + "player",
@@ -62,7 +75,7 @@ $(function() {
  					contentType: "application/json"
  				});
  				for (let i = 0; i < BaseballChart.player.playerList.length; i++) {
- 					if (BaseballChart.player.playerList[i].name == player) {
+ 					if (BaseballChart.player.playerList[i].name == player && BaseballChart.player.playerList[i].teamName == team) {
  						BaseballChart.player.playerList.splice(i, 1);
  					}
  				}

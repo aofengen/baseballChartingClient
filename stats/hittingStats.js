@@ -124,7 +124,7 @@ $(function() {
 				let stolenbases = $("#stolen-bases").val();
 				let caughtstealing = $("#caught-stealing").val();
 				
-				let playerInDB = BaseballChart.hstats.isPlayerInDB(player);
+				let playerInDB = BaseballChart.hstats.isPlayerInDB(player, team);
 				if (playerInDB === false) {
 					let postData = {
 						team: team,
@@ -155,6 +155,7 @@ $(function() {
 					alert(player + "\'s hitting stats added to database");
 				} else {
 					let postData = {
+						team = team,
 						player: player,
 						abs: atbats,
 						singles: singles,
@@ -183,14 +184,14 @@ $(function() {
 					alert(player + "\'s hitting stats have been updated.");
 				}
 			},
-			isPlayerInDB: function(playerName) {
+			isPlayerInDB: function(playerName, teamName) {
 				BaseballChart.hstats.fetchAll();
 				let stats = BaseballChart.hstats.statsList;
 				let playerInDB = false;
 				for (let i = 0; i <= stats.length; i++) {
 					if (i == stats.length) {
 						break;
-					} else if (stats[i].player == playerName) {
+					} else if (stats[i].player == playerName && stats[i].team == teamName) {
 						return playerInDB = true;
 					}
 				}
@@ -199,6 +200,7 @@ $(function() {
 			setStats: function() {
 				BaseballChart.hstats.clearStats();
 				let hittingStats = BaseballChart.hstats.statsList;
+				let teamName = $("#Hstats-teamList option:selected").text();
 				let playerName = $("#Hstats-playerList option:selected").text();
 				if (hittingStats.length < 1) {
 					BaseballChart.hstats.fetchAll();
@@ -207,8 +209,8 @@ $(function() {
 					for (let i = 0; i <= hittingStats.length; i++) {
 						if (i == hittingStats.length) {
 							BaseballChart.hstats.fetchAll();
-							alert("Player not found in database. Please save hitting stats first or try again.");
-						} else if (hittingStats[i].player == playerName) {
+							alert(playerName + "\'s stats not found in database. Please save hitting stats first or try again.");
+						} else if (hittingStats[i].team == teamName && hittingStats[i].player == playerName) {
 							$("#at-bats").val(hittingStats[i].atbats);
 							$("#singles").val(hittingStats[i].singles);
 							$("#doubles").val(hittingStats[i].doubles);
@@ -243,21 +245,22 @@ $(function() {
 				$("#caught-stealing").val("");
 			},
 			deleteStats: function() {
+				let teamName = $("#Hstats-teamList option:selected").text();
 				let playerName = $("#Hstats-playerList option:selected").text();
-				let playerInDB = BaseballChart.hstats.isPlayerInDB(playerName);
+				let playerInDB = BaseballChart.hstats.isPlayerInDB(playerName, teamName);
 				if (playerInDB === false) {
 					alert(playerName + " has no hitting stats in the database");
 				} else {
-					let deleteConfirm = confirm("Are you sure you want to delete hitting stats for " + playerName + "?");
+					let deleteConfirm = confirm("Are you sure you want to delete hitting stats for " + playerName + " (" + teamName + ") ?");
 					if (deleteConfirm === false) {
-						alert(playerName + "\'s hitting stats were not deleted.");
+						alert("Hitting stats for " + playerName + " (" + teamName + ") were not deleted.");
 					} else {
 						let stats = BaseballChart.hstats.statsList;
 						for (let i = 0; i <= stats.length; i++) {
 							if (i == length) {
-								alert(playerName + " has hitting no stats in the database");
-							} else if (stats[i].player == playerName) {
-								let deleteData = {player: playerName};
+								alert(playerName + " (" + teamName + ") has hitting no stats in the database");
+							} else if (stats[i].team == teamName && stats[i].player == playerName) {
+								let deleteData = {team: teamName, player: playerName};
 								let deletePlayerStats = $.ajax({
 									type: "DELETE",
 									url: BaseballChart.API_BASE + "hstats",
@@ -265,11 +268,11 @@ $(function() {
 									contentType: "application/json"
 								});
 								deletePlayerStats.fail(function() {
-									alert("Failed to delete " + playerName + "\'s hitting stats. Please try again");
+									alert("Failed to delete hitting stats for " + playerName + " (" + teamName + "). Please try again.");
 								});
 								BaseballChart.hstats.clearStats();
 								BaseballChart.hstats.fetchAll();
-								alert(playerName + "\'s hitting stats were deleted.");
+								alert("Hitting stats for " + playerName + " (" + teamName + ") were deleted.");
 								i += stats.length;
 							}
 						}

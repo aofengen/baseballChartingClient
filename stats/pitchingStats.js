@@ -57,14 +57,14 @@ $(function() {
 				"against a pitcher. The lower the number, the better. *NOTE: This stat is heavily affected by the catcher behind the plate" +
 				", and may not be a quality method of ranking pitchers.*"
 			},
-			isPlayerInDB: function(playerName) {
+			isPlayerInDB: function(playerName, teamName) {
 				BaseballChart.Pstats.fetchAll();
 				let stats = BaseballChart.Pstats.statsList;
 				let playerInDB = false;
 				for (let i = 0; i <= stats.length; i++) {
 					if (i == stats.length) {
 						break;
-					} else if (stats[i].player == playerName) {
+					} else if (stats[i].teamName == teamName && stats[i].player == playerName) {
 						return playerInDB = true;
 					}
 				}
@@ -73,6 +73,7 @@ $(function() {
 			saveStats: function() {
 				let team = $("#Pstats-teamList option:selected").text();
 				let player = $("#Pstats-playerList option:selected").text();
+				let position = $("#Pstats-positionList option:selected").text();
 				let inningsPitched = $("#inningsPitched").val();
 				let wins = $("#wins").val();
 				let losses = $("#losses").val();
@@ -88,11 +89,12 @@ $(function() {
 				let caughtstealing = $("#runnersCaughtStealing").val();
 				let homerunsallowed = $("#homeRunsAllowed").val();
 
-				let playerInDB = BaseballChart.Pstats.isPlayerInDB(player);
+				let playerInDB = BaseballChart.Pstats.isPlayerInDB(team, player);
 				if (playerInDB === false) {
 					let postData = {
 						team: team,
 						player: player,
+						position: position,
 						ip: inningsPitched,
 						wins: wins,
 						losses: losses,
@@ -120,7 +122,9 @@ $(function() {
 					alert(player + "\'s pitching stats added to database");
 				} else {
 					let postData = {
+						team: team,
 						player: player,
+						position: position,
 						ip: inningsPitched,
 						wins: wins,
 						losses: losses,
@@ -184,6 +188,7 @@ $(function() {
 			setStats: function() {
 				BaseballChart.Pstats.clearStats();
 				let stats = BaseballChart.Pstats.statsList;
+				let teamName = $("#Pstats-teamList option:selected").text();
 				let playerName = $("#Pstats-playerList option:selected").text();
 				if (stats.length < 1) {
 					BaseballChart.Pstats.fetchAll();
@@ -193,7 +198,7 @@ $(function() {
 						if (i == stats.length) {
 							BaseballChart.Pstats.fetchAll();
 							alert(playerName + " not found in database. Please save stats first or try again.");
-						} else if (stats[i].player == playerName) {
+						} else if (stats[i].team == teamName && stats[i].player == playerName) {
 							$("#inningsPitched").val(stats[i].IP);
 							$("#wins").val(stats[i].wins);
 							$("#losses").val(stats[i].losses);
@@ -214,21 +219,22 @@ $(function() {
 				}
 			},
 			deleteStats: function() {
+				let teamName = $("#Pstats-teamList option:selected").text();
 				let playerName = $("#Pstats-playerList option:selected").text();
 				let playerInDB = BaseballChart.Pstats.isPlayerInDB(playerName);
 				if (playerInDB === false) {
-					alert(playerName + " has no pitching stats in the database");
+					alert(playerName + " (" + teamName + ") has no pitching stats in the database");
 				} else {
-					let deleteConfirm = confirm("Are you sure you want to delete the pitching stats for " + playerName + "?");
+					let deleteConfirm = confirm("Are you sure you want to delete the pitching stats for " + playerName + " (" + teamName + ")?");
 					if (deleteConfirm === false) {
-						alert(playerName + "\'s pitching stats were not deleted.");
+						alert("Pitching stats for " + playerName +  " (" + teamName + ") were not deleted.");
 					} else {
 						let stats = BaseballChart.Pstats.statsList;
 						for (let i = 0; i <= stats.length; i++) {
 							if (i == length) {
-								alert(playerName + " does not have pitching stats in the database");
-							} else if (stats[i].player == playerName) {
-								let deleteData = {player: playerName};
+								alert(playerName + " (" + teamName + ") does not have pitching stats in the database");
+							} else if (stats[i].team== teamName && stats[i].player == playerName) {
+								let deleteData = {team: teamName, player: playerName};
 								let deletePlayerStats = $.ajax({
 									type: "DELETE",
 									url: BaseballChart.API_BASE + "pstats",
@@ -236,11 +242,11 @@ $(function() {
 									contentType: "application/json"
 								});
 								deletePlayerStats.fail(function() {
-									alert("Failed to delete " + playerName + "\'s pitching stats. Please try again");
+									alert("Failed to delete pitching stats for " + playerName + " (" + teamName + "). Please try again");
 								});
 								BaseballChart.Pstats.clearStats();
 								BaseballChart.Pstats.fetchAll();
-								alert(playerName + "\'s pitching stats were deleted.");
+								alert("Pitching stats for " + playerName +  " (" + teamName + ") were deleted.");
 								i += stats.length;
 							}
 						}
@@ -256,5 +262,5 @@ $(function() {
 	$("#savePStats").on("click", BaseballChart.Pstats.saveStats);
 	$("#getPStats").on("click", BaseballChart.Pstats.setStats);
 	$("#clearPStats").on("click", BaseballChart.Pstats.clearStats);
-	$("#deletePStats").on("click", BaseballChart.Pstats.deleteStats)
+	$("#deletePStats").on("click", BaseballChart.Pstats.deleteStats);
 })
