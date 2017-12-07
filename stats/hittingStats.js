@@ -110,6 +110,7 @@ $(function() {
 			saveStats: function() {
 				let team = $("#Hstats-teamList option:selected").text();
 				let player = $("#Hstats-playerList option:selected").text();
+				let position = $("#Hstats-positionList option:selected").text();
 				let atbats = $("#at-bats").val();
 				let singles = $("#singles").val();
 				let doubles = $("#doubles").val();
@@ -129,6 +130,7 @@ $(function() {
 					let postData = {
 						team: team,
 						player: player,
+						position: position,
 						abs: atbats,
 						singles: singles,
 						doubles: doubles,
@@ -157,6 +159,7 @@ $(function() {
 					let postData = {
 						team = team,
 						player: player,
+						position: position,
 						abs: atbats,
 						singles: singles,
 						doubles: doubles,
